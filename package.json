@@ -1,0 +1,21 @@
+{
+  "name": "intelligent-campus-placement-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lakshay-0423/intelligent-campus-placement-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lakshay-0423/intelligent-campus-placement-system/issues"
+  },
+  "homepage": "https://github.com/lakshay-0423/intelligent-campus-placement-system#readme"
+}
