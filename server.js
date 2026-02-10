@@ -1,13 +1,11 @@
 const http = require('http');
+const fs = require('fs');
 
 const server = http.createServer((req,res)=>{
-    if(req.url=== '/health' && req.method==='GET'){
+    if(req.url=== '/students' && req.method==='GET'){
+        const students = fs.readFileSync("./data/students.json","utf-8");
         res.writeHead(200,{"content-type" : "text/plain"});
-        res.end("ok");
-    }
-    else if(req.url === '/info' && req.method === "GET"){
-        res.writeHead(200,{"content-type" : "application/json"});
-        res.end(JSON.stringify({project : "Intelligent Campus Placement System"}));
+        res.end(students);
     }
     else{
         res.writeHead(404);
