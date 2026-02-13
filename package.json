@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/lakshay-0423/intelligent-campus-placement-system/issues"
   },
-  "homepage": "https://github.com/lakshay-0423/intelligent-campus-placement-system#readme"
+  "homepage": "https://github.com/lakshay-0423/intelligent-campus-placement-system#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
