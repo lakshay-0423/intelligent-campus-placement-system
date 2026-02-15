@@ -1,8 +1,10 @@
 const express = require("express");
+const studentRoutes = require("./routes/students");
 
 const app = new express();
 
 app.use(express.json());
+app.use("/students", studentRoutes);
 
 app.get('/',(req,res)=>{
     res.send("Intelligent Campus Placement System API");
