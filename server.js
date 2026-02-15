@@ -1,14 +1,22 @@
-const http = require('http');
-const studentRoutes = require("./routes/students");
-const companyRoutes = require("./routes/conmpanies");
-const teacherRoutes = require("./routes/teachers");
+const express = require("express");
 
-const server = http.createServer((req, res) => {
-    if (req.url === "/students") studentRoutes(req, res);
-    if (req.url === "/teachers") teacherRoutes(req, res);
-    if (req.url === "/companies") companyRoutes(req, res);
+const app = new express();
+
+app.use(express.json());
+
+app.get('/',(req,res)=>{
+    res.send("Intelligent Campus Placement System API");
 });
 
-server.listen(3000, () => {
-    console.log("Server running on port 3000");
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK" });
+});
+
+app.get("/info", (req, res) => {
+  res.json({ project: "Intelligent Campus Placement System" });
+});
+
+const PORT = 3000;
+app.listen(PORT,()=>{
+    console.log(`Server running on port ${PORT}`);
 });
