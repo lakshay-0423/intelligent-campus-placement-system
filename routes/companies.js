@@ -1,18 +1,8 @@
-const fs = require("fs");
-const readBody = require("../utils/readBody");
+const express = require("express");
+const router = express.Router();
+const companyController = require("../controllers/companyController");
 
-module.exports = (req, res) => {
-    if (req.method === "GET") {
-        const data = fs.readFileSync("./data/companies.json");
-        res.end(data);
-    }
+router.get("/", companyController.getCompanies);
+router.post("/", companyController.createCompany);
 
-    if (req.method === "POST") {
-        readBody(req, (company) => {
-            const companies = JSON.parse(fs.readFileSync("./data/companies.json"));
-            companies.push(company);
-            fs.writeFileSync("./data/companies.json", JSON.stringify(companies, null, 2));
-            res.end("company added");
-        });
-    }
-};
+module.exports = router;
