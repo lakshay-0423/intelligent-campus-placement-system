@@ -12,6 +12,16 @@ exports.createStudents = (req, res) => {
         fs.readFileSync("./data/students.json")
     );
 
+    const exists = students.find(
+        s => s.email === req.body.email
+    );
+
+    if (exists) {
+        return res.status(400).json({
+            message: "Student with this email already exists"
+        });
+    }
+    
     const maxId = students.length > 0
         ? Math.max(...students.map(s => s.id))
         : 0;
