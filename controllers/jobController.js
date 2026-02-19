@@ -12,7 +12,16 @@ exports.createJob = (req, res) => {
     fs.readFileSync("./data/jobs.json")
   );
 
-  jobs.push(req.body);
+  const maxId = jobs.length > 0
+    ? Math.max(...jobs.map(s => s.id))
+    : 0;
+
+  const newJob = {
+    id: maxId + 1,
+    ...req.body
+  };
+
+  jobs.push(newJob);
 
   fs.writeFileSync(
     "./data/jobs.json",

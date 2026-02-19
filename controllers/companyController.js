@@ -12,7 +12,26 @@ exports.createCompany = (req, res) => {
     fs.readFileSync("./data/companies.json")
   );
 
-  companies.push(req.body);
+  const exists = companies.find(
+    s => s.email === req.body.email
+  );
+
+  if (exists) {
+    return res.status(400).json({
+      message: "Company with this email already exists"
+    });
+  }
+
+  const maxId = companies.length > 0
+    ? Math.max(...companies.map(s => s.id))
+    : 0;
+
+  const newCompany = {
+    id: maxId + 1,
+    ...req.body
+  };
+
+  companies.push(newCompany);
 
   fs.writeFileSync(
     "./data/companies.json",
