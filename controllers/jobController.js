@@ -1,65 +1,81 @@
 const fs = require("fs");
 
-exports.getJobs = (req, res) => {
-  const jobs = JSON.parse(
-    fs.readFileSync("./data/jobs.json")
-  );
-  res.json(jobs);
+exports.getJobs = (req, res, next) => {
+  try {
+    const jobs = JSON.parse(
+      fs.readFileSync("./data/jobs.json")
+    );
+    res.json(jobs);
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.createJob = (req, res) => {
-  const jobs = JSON.parse(
-    fs.readFileSync("./data/jobs.json")
-  );
+exports.createJob = (req, res, next) => {
+  try {
+    const jobs = JSON.parse(
+      fs.readFileSync("./data/jobs.json")
+    );
 
-  const maxId = jobs.length > 0
-    ? Math.max(...jobs.map(s => s.id))
-    : 0;
+    const maxId = jobs.length > 0
+      ? Math.max(...jobs.map(s => s.id))
+      : 0;
 
-  const newJob = {
-    id: maxId + 1,
-    ...req.body
-  };
+    const newJob = {
+      id: maxId + 1,
+      ...req.body
+    };
 
-  jobs.push(newJob);
+    jobs.push(newJob);
 
-  fs.writeFileSync(
-    "./data/jobs.json",
-    JSON.stringify(jobs, null, 2)
-  );
+    fs.writeFileSync(
+      "./data/jobs.json",
+      JSON.stringify(jobs, null, 2)
+    );
 
-  res.status(201).json({ message: "Job created" });
+    res.status(201).json({ message: "Job created" });
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.updateJob = (req, res) => {
-  const id = parseInt(req.params.id);
-  const jobs = JSON.parse(
-    fs.readFileSync("./data/jobs.json")
-  );
+exports.updateJob = (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    const jobs = JSON.parse(
+      fs.readFileSync("./data/jobs.json")
+    );
 
-  const index = jobs.findIndex(c => c.id === id);
-  jobs[index] = { ...jobs[index], ...req.body };
+    const index = jobs.findIndex(c => c.id === id);
+    jobs[index] = { ...jobs[index], ...req.body };
 
-  fs.writeFileSync(
-    "./data/jobs.json",
-    JSON.stringify(jobs, null, 2)
-  );
+    fs.writeFileSync(
+      "./data/jobs.json",
+      JSON.stringify(jobs, null, 2)
+    );
 
-  res.json({ message: "Job updated" });
+    res.json({ message: "Job updated" });
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.deleteJob = (req, res) => {
-  const id = parseInt(req.params.id);
-  let jobs = JSON.parse(
-    fs.readFileSync("./data/jobs.json")
-  );
+exports.deleteJob = (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    let jobs = JSON.parse(
+      fs.readFileSync("./data/jobs.json")
+    );
 
-  jobs = jobs.filter(c => c.id !== id);
+    jobs = jobs.filter(c => c.id !== id);
 
-  fs.writeFileSync(
-    "./data/jobs.json",
-    JSON.stringify(jobs, null, 2)
-  );
+    fs.writeFileSync(
+      "./data/jobs.json",
+      JSON.stringify(jobs, null, 2)
+    );
 
-  res.json({ message: "Job deleted" });
+    res.json({ message: "Job deleted" });
+  } catch (error) {
+    next(error);
+  }
 };

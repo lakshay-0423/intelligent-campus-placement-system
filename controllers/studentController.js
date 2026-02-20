@@ -1,76 +1,92 @@
 const fs = require('fs');
 
-exports.getStudents = (req, res) => {
-    const students = JSON.parse(
-        fs.readFileSync("./data/students.json")
-    );
-    res.json(students);
-};
-
-exports.createStudents = (req, res) => {
-    const students = JSON.parse(
-        fs.readFileSync("./data/students.json")
-    );
-
-    const exists = students.find(
-        s => s.email === req.body.email
-    );
-
-    if (exists) {
-        return res.status(400).json({
-            message: "Student with this email already exists"
-        });
+exports.getStudents = (req, res, next) => {
+    try {
+        const students = JSON.parse(
+            fs.readFileSync("./data/students.json")
+        );
+        res.json(students);
+    } catch (error) {
+        next(error);
     }
-    
-    const maxId = students.length > 0
-        ? Math.max(...students.map(s => s.id))
-        : 0;
-
-    const newStudent = {
-        id: maxId + 1,
-        ...req.body
-    };
-
-    students.push(newStudent);
-
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 2)
-    );
-
-    res.status(201).json({ message: "Student Created" });
 };
 
-exports.updateStudent = (req, res) => {
-    const id = parseInt(req.params.id);
-    const students = JSON.parse(
-        fs.readFileSync("./data/students.json")
-    );
+exports.createStudents = (req, res, next) => {
+    try {
+        const students = JSON.parse(
+            fs.readFileSync("./data/students.json")
+        );
 
-    const index = students.findIndex(s => s.id === id);
+        const exists = students.find(
+            s => s.email === req.body.email
+        );
 
-    students[index] = { ...students[index], ...req.body };
+        if (exists) {
+            return res.status(400).json({
+                message: "Student with this email already exists"
+            });
+        }
 
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 2)
-    );
+        const maxId = students.length > 0
+            ? Math.max(...students.map(s => s.id))
+            : 0;
 
-    res.json({ message: "Student updated" });
+        const newStudent = {
+            id: maxId + 1,
+            ...req.body
+        };
+
+        students.push(newStudent);
+
+        fs.writeFileSync(
+            "./data/students.json",
+            JSON.stringify(students, null, 2)
+        );
+
+        res.status(201).json({ message: "Student Created" });
+    } catch (error) {
+        next(error);
+    }
 };
 
-exports.deleteStudent = (req, res) => {
-    const id = parseInt(req.params.id);
-    let students = JSON.parse(
-        fs.readFileSync("./data/students.json")
-    );
+exports.updateStudent = (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id);
+        const students = JSON.parse(
+            fs.readFileSync("./data/students.json")
+        );
 
-    students = students.filter(s => s.id !== id);
+        const index = students.findIndex(s => s.id === id);
 
-    fs.writeFileSync(
-        "./data/students.json",
-        JSON.stringify(students, null, 2)
-    );
+        students[index] = { ...students[index], ...req.body };
 
-    res.json({ message: "Student deleted" });
+        fs.writeFileSync(
+            "./data/students.json",
+            JSON.stringify(students, null, 2)
+        );
+
+        res.json({ message: "Student updated" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.deleteStudent = (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id);
+        let students = JSON.parse(
+            fs.readFileSync("./data/students.json")
+        );
+
+        students = students.filter(s => s.id !== id);
+
+        fs.writeFileSync(
+            "./data/students.json",
+            JSON.stringify(students, null, 2)
+        );
+
+        res.json({ message: "Student deleted" });
+    } catch (error) {
+        next(error);
+    }
 };
