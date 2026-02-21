@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const companyController = require("../controllers/companyController");
-const validateId = require("../middleware/validateId");
+const validateObjectId = require("../middleware/validateObjectId");
 
 router.get("/", companyController.getCompanies);
 
@@ -9,13 +9,13 @@ router.post("/", companyController.createCompany);
 
 router.put(
   "/:id",
-  validateId("./data/companies.json"),
+  validateObjectId,
   companyController.updateCompany
 );
 
 router.delete(
   "/:id",
-  validateId("./data/companies.json"),
+  validateObjectId,
   companyController.deleteCompany
 );
 
