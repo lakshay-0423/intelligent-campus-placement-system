@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 const studentRoutes = require("./routes/students");
 const companyRoutes = require("./routes/companies");
 const jobRoutes = require("./routes/jobs");
@@ -9,16 +11,16 @@ const app = new express();
 
 app.use(express.json());
 app.use(logger);
-app.use(errorHandler);
 app.use("/students", studentRoutes);
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
+app.use(errorHandler);
 
-app.get('/',(req,res)=>{
-    res.send("Intelligent Campus Placement System API");
-});
-
-const PORT = 3000;
-app.listen(PORT,()=>{
-    console.log(`Server running on port ${PORT}`);
-});
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("MongoDB Connected");
+        app.listen(process.env.PORT, () => {
+            console.log(`Server running on port ${process.env.PORT}`);
+        });
+    })
+    .catch(err => console.log(err));
