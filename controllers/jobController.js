@@ -1,78 +1,46 @@
-const fs = require("fs");
+const Job = require("../models/Job");
 
-exports.getJobs = (req, res, next) => {
+exports.getJobs = async (req, res, next) => {
   try {
-    const jobs = JSON.parse(
-      fs.readFileSync("./data/jobs.json")
-    );
+    const jobs = await Job.find().populate("company");
     res.json(jobs);
   } catch (error) {
     next(error);
   }
 };
 
-exports.createJob = (req, res, next) => {
+exports.createJob = async (req, res, next) => {
   try {
-    const jobs = JSON.parse(
-      fs.readFileSync("./data/jobs.json")
-    );
-
-    const maxId = jobs.length > 0
-      ? Math.max(...jobs.map(s => s.id))
-      : 0;
-
-    const newJob = {
-      id: maxId + 1,
-      ...req.body
-    };
-
-    jobs.push(newJob);
-
-    fs.writeFileSync(
-      "./data/jobs.json",
-      JSON.stringify(jobs, null, 2)
-    );
-
-    res.status(201).json({ message: "Job created" });
+    const job = await Job.create(req.body);
+    res.status(201).json(job);
   } catch (error) {
     next(error);
   }
 };
 
-exports.updateJob = (req, res, next) => {
+exports.updateJob = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    const jobs = JSON.parse(
-      fs.readFileSync("./data/jobs.json")
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
     );
 
-    const index = jobs.findIndex(c => c.id === id);
-    jobs[index] = { ...jobs[index], ...req.body };
+    if (!job)
+      return res.status(404).json({ message: "Job not found" });
 
-    fs.writeFileSync(
-      "./data/jobs.json",
-      JSON.stringify(jobs, null, 2)
-    );
-
-    res.json({ message: "Job updated" });
+    res.json(job);
   } catch (error) {
     next(error);
   }
 };
 
-exports.deleteJob = (req, res, next) => {
+exports.deleteJob = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    let jobs = JSON.parse(
-      fs.readFileSync("./data/jobs.json")
-    );
+    const job = await Job.findByIdAndDelete(req.params.id);
 
-    jobs = jobs.filter(c => c.id !== id);
-
-    fs.writeFileSync(
-      "./data/jobs.json",
-      JSON.stringify(jobs, null, 2)
-    );
+    if (!job)
+      return res.status(404).json({ message: "Job not found" });
 
     res.json({ message: "Job deleted" });
   } catch (error) {

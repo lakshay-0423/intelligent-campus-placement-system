@@ -1,88 +1,46 @@
-const fs = require("fs");
+const Company = require("../models/Company");
 
-exports.getCompanies = (req, res, next) => {
+exports.getCompanies = async (req, res, next) => {
   try {
-    const companies = JSON.parse(
-      fs.readFileSync("./data/companies.json")
-    );
+    const companies = await Company.find();
     res.json(companies);
   } catch (error) {
     next(error);
   }
 };
 
-exports.createCompany = (req, res, next) => {
+exports.createCompany = async (req, res, next) => {
   try {
-    const companies = JSON.parse(
-      fs.readFileSync("./data/companies.json")
-    );
-
-    const exists = companies.find(
-      s => s.email === req.body.email
-    );
-
-    if (exists) {
-      return res.status(400).json({
-        message: "Company with this email already exists"
-      });
-    }
-
-    const maxId = companies.length > 0
-      ? Math.max(...companies.map(s => s.id))
-      : 0;
-
-    const newCompany = {
-      id: maxId + 1,
-      ...req.body
-    };
-
-    companies.push(newCompany);
-
-    fs.writeFileSync(
-      "./data/companies.json",
-      JSON.stringify(companies, null, 2)
-    );
-
-    res.status(201).json({ message: "Company created" });
+    const company = await Company.create(req.body);
+    res.status(201).json(company);
   } catch (error) {
     next(error);
   }
 };
 
-exports.updateCompany = (req, res, next) => {
+exports.updateCompany = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    const companies = JSON.parse(
-      fs.readFileSync("./data/companies.json")
+    const company = await Company.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
     );
 
-    const index = companies.findIndex(c => c.id === id);
-    companies[index] = { ...companies[index], ...req.body };
+    if (!company)
+      return res.status(404).json({ message: "Company not found" });
 
-    fs.writeFileSync(
-      "./data/companies.json",
-      JSON.stringify(companies, null, 2)
-    );
-
-    res.json({ message: "Company updated" });
+    res.json(company);
   } catch (error) {
     next(error);
   }
 };
 
-exports.deleteCompany = (req, res, next) => {
+exports.deleteCompany = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    let companies = JSON.parse(
-      fs.readFileSync("./data/companies.json")
-    );
+    const company = await Company.findByIdAndDelete(req.params.id);
 
-    companies = companies.filter(c => c.id !== id);
-
-    fs.writeFileSync(
-      "./data/companies.json",
-      JSON.stringify(companies, null, 2)
-    );
+    if (!company)
+      return res.status(404).json({ message: "Company not found" });
 
     res.json({ message: "Company deleted" });
   } catch (error) {
