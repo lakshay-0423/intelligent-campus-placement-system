@@ -2,19 +2,35 @@ const express = require("express");
 const router = express.Router();
 const jobController = require("../controllers/jobController");
 const validateObjectId = require("../middleware/validateObjectId");
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 
-router.get("/", jobController.getJobs);
+router.get(
+  "/",
+  protect,
+  authorize("student", "admin", "company"),
+  jobController.getJobs
+);
 
-router.post("/", jobController.createJob);
+router.post(
+  "/",
+  protect,
+  authorize("admin", "company"),
+  jobController.createJob
+);
 
 router.put(
   "/:id",
+  protect,
+  authorize("admin", "company"),
   validateObjectId,
   jobController.updateJob
 );
 
 router.delete(
   "/:id",
+  protect,
+  authorize("admin"),
   validateObjectId,
   jobController.deleteJob
 );
