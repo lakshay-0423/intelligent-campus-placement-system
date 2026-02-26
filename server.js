@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const studentRoutes = require("./routes/students");
 const companyRoutes = require("./routes/companies");
+const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
 const logger = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
@@ -14,6 +15,7 @@ app.use(logger);
 app.use("/students", studentRoutes);
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
+app.use("/auth", authRoutes);
 app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI)
