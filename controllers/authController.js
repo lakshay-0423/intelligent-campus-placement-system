@@ -102,3 +102,24 @@ exports.refreshToken = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.logout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken)
+      return res.status(400).json({ message: "Refresh token required" });
+
+    const user = await User.findOne({ refreshToken });
+    if (!user)
+      return res.status(400).json({ message: "Invalid token" });
+
+    user.refreshToken = null;
+    await user.save();
+
+    res.json({ message: "Logged out successfully" });
+
+  } catch (error) {
+    next(error);
+  }
+};
