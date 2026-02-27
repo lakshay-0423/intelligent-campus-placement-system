@@ -47,3 +47,23 @@ exports.deleteCompany = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.createCompanyProfile = async (req, res, next) => {
+  try {
+    const exists = await Company.findOne({ user: req.user.id });
+    if (exists)
+      return res.status(400).json({ message: "Profile already exists" });
+
+    const profile = await Company.create({
+      user: req.user.id,
+      name: req.body.name,
+      location: req.body.location,
+      description: req.body.description
+    });
+
+    res.status(201).json(profile);
+
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
 
 const companySchema = new mongoose.Schema({
-  name: {
-    type: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
     unique: true
   },
-  location: String
+  name: {
+    type: String,
+    required: true
+  },
+  location: String,
+  description: String
 }, { timestamps: true });
 
 module.exports = mongoose.model("Company", companySchema);

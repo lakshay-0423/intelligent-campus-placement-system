@@ -56,6 +56,7 @@ exports.createProfile = async (req, res, next) => {
 
     const profile = await Student.create({
       user: req.user.id,
+      name: req.body.name,
       branch: req.body.branch,
       cgpa: req.body.cgpa
     });

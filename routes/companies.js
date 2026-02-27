@@ -8,6 +8,13 @@ const authorize = require("../middleware/roleMiddleware");
 router.get("/", protect, companyController.getCompanies);
 
 router.post(
+  "/profile",
+  protect,
+  authorize("company"),
+  companyController.createCompanyProfile
+);
+
+router.post(
   "/",
   protect,
   authorize("admin"),
