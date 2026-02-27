@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const studentController = require("../controllers/studentController");
 const validateObjectId = require("../middleware/validateObjectId");
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 
 router.get(
   "/",
