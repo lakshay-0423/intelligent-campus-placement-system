@@ -13,7 +13,13 @@ const studentSchema = new mongoose.Schema({
     branch: {
         type: String,
         required: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        unique: true
     }
-}, { timestamps: true});
+}, { timestamps: true });
 
-module.exports = mongoose.model("Student",studentSchema);
+module.exports = mongoose.model("Student", studentSchema);

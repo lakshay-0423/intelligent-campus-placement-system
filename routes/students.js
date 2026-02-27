@@ -5,6 +5,13 @@ const validateObjectId = require("../middleware/validateObjectId");
 const protect = require("../middleware/authMiddleware");
 const authorize = require("../middleware/roleMiddleware");
 
+router.post(
+  "/profile",
+  protect,
+  authorize("student"),
+  studentController.createProfile
+);
+
 router.get(
   "/",
   protect,

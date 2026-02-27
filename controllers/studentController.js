@@ -47,3 +47,22 @@ exports.deleteStudent = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.createProfile = async (req, res, next) => {
+  try {
+    const exists = await Student.findOne({ user: req.user.id });
+    if (exists)
+      return res.status(400).json({ message: "Profile already exists" });
+
+    const profile = await Student.create({
+      user: req.user.id,
+      branch: req.body.branch,
+      cgpa: req.body.cgpa
+    });
+
+    res.status(201).json(profile);
+
+  } catch (error) {
+    next(error);
+  }
+};
