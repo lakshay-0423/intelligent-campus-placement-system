@@ -84,7 +84,19 @@ exports.refreshToken = async (req, res, next) => {
       { expiresIn: "15m" }
     );
 
-    res.json({ accessToken: newAccessToken });
+    const newRefreshToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    user.refreshToken = newRefreshToken;
+    await user.save();
+
+    res.json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    });
 
   } catch (error) {
     next(error);
