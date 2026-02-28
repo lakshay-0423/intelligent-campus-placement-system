@@ -52,7 +52,10 @@ exports.login = async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    user.refreshToken = refreshToken;
+    const salt = await bcrypt.genSalt(10);
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+
+    user.refreshToken = hashedRefreshToken;
     await user.save();
 
     res.json({
@@ -72,11 +75,19 @@ exports.refreshToken = async (req, res, next) => {
     if (!refreshToken)
       return res.status(401).json({ message: "No refresh token provided" });
 
-    const user = await User.findOne({ refreshToken });
-    if (!user)
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+    if (!user || !user.refreshToken)
       return res.status(403).json({ message: "Invalid refresh token" });
 
-    jwt.verify(refreshToken, process.env.JWT_SECRET);
+    const isMatch = await bcrypt.compare(
+      refreshToken,
+      user.refreshToken
+    );
+
+    if (!isMatch)
+      return res.status(403).json({ message: "Invalid refresh token" });
 
     const newAccessToken = jwt.sign(
       { id: user._id, role: user.role },
@@ -90,7 +101,9 @@ exports.refreshToken = async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    user.refreshToken = newRefreshToken;
+    const salt = await bcrypt.genSalt(10);
+    user.refreshToken = await bcrypt.hash(newRefreshToken, salt);
+
     await user.save();
 
     res.json({
@@ -110,7 +123,9 @@ exports.logout = async (req, res, next) => {
     if (!refreshToken)
       return res.status(400).json({ message: "Refresh token required" });
 
-    const user = await User.findOne({ refreshToken });
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
     if (!user)
       return res.status(400).json({ message: "Invalid token" });
 
