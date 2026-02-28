@@ -5,6 +5,7 @@ const studentRoutes = require("./routes/students");
 const companyRoutes = require("./routes/companies");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
+const applicationsRoutes = require("./routes/applications");
 const logger = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -16,7 +17,7 @@ app.use("/students", studentRoutes);
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/auth", authRoutes);
-app.use("/api/applications", require("./routes/applicationRoutes"));
+app.use("/api/applications", applicationsRoutes);
 app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI)

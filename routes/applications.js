@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { protect, authorize } = require("../middleware/auth");
+const protect = require("../middleware/authMiddleware");
+const authorize = require("../middleware/roleMiddleware");
 const applicationController = require("../controllers/applicationController");
 
 router.post(
   "/:jobId",
   protect,
-  authorize("Student"),
+  authorize("student"),
   applicationController.applyJob
 );
 
