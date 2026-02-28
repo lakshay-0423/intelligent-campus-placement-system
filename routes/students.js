@@ -23,7 +23,7 @@ router.post(
   "/",
   protect,
   authorize("admin"),
-  studentController.createStudents
+  studentController.createStudent
 );
 
 router.put(
