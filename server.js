@@ -16,6 +16,7 @@ app.use("/students", studentRoutes);
 app.use("/companies", companyRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/applications", require("./routes/applicationRoutes"));
 app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI)
